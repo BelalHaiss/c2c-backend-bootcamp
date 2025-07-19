@@ -6,6 +6,7 @@
 4. Block Scope (introduced in ES6 with let/const)
 */
 
+
 // === 1 & 2. Global vs Module Scope ===
 // In browser script: var = global (window), let/const not
 // In Node.js: everything is in module scope, not global
