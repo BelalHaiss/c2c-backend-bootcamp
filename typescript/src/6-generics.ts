@@ -21,7 +21,7 @@ const stringResult = identity('hello'); // Type: string
 const objectResult = identity({ name: 'John' }); // Type: { name: string }
 const nullResult = identity(null); // Type: { name: string }
 
-// how to make generic share some of types
+// how to make generic share some of types // limited
 
 function limitIdentity<T extends string | number>(arg: T): T {
   return arg;
