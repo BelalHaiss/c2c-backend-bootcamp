@@ -1,19 +1,22 @@
 {
-  "name": "node_101",
+  "name": "express-101",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc ",
-    "dev": "tsx playground.ts"
+    "dev": " tsx watch server.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
   "devDependencies": {
-    "@types/node": "^24.1.0",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.2.1",
     "tsx": "^4.20.3",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.2"
   }
 }

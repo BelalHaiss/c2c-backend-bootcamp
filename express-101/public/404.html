@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Not Found</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        .error-container {
+            background: white;
+            padding: 3rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .error-code {
+            font-size: 6rem;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .error-message {
+            font-size: 1.5rem;
+            color: #333;
+            margin: 1rem 0;
+        }
+
+        .error-details {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+            border-left: 4px solid #ff6b6b;
+        }
+
+        .back-link {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: background 0.3s;
+        }
+
+        .back-link:hover {
+            background: #5a67d8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="error-container">
+            <h1 class="error-code">404</h1>
+            <h2 class="error-message">File Not Found</h2>
+
+            <div class="error-details">
+                <p><strong>Requested Path:</strong> <code>{{requestedPath}}</code></p>
+                <p><strong>Method:</strong> {{method}}</p>
+                <p><strong>Timestamp:</strong> {{timestamp}}</p>
+            </div>
+
+            <p>The file you're looking for doesn't exist in our public directory.</p>
+
+            <div style="margin-top: 2rem;">
+                <a href="/" class="back-link">← Back to Home</a>
+            </div>
+
+            <div class="card" style="margin-top: 2rem;">
+                <h3>Available Files:</h3>
+                <ul style="text-align: left;">
+                    <li><a href="/">/</a> - Home page</li>
+                    <li><a href="/about.html">/about.html</a> - About page</li>
+                    <li><a href="/styles.css">/styles.css</a> - Stylesheet</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

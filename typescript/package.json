@@ -1,4 +1,11 @@
 {
+  "scripts": {
+    "build": "npm run type-check && tsc",
+    "type-check": "tsc --noEmit",
+    "start": "echo start",
+    "prestart": "echo before start",
+    "poststart": "echo after start"
+  },
   "devDependencies": {
     "@types/node": "^24.0.14",
     "typescript": "^5.8.3"
