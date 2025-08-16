@@ -1,63 +1,24 @@
-import * as fs from 'fs';
-import * as path from 'path';
+const { createHmac } = require('node:crypto');
 
-// ❌ PROBLEMATIC: Using relative path without __dirname
-console.log('--- Attempting to read file with relative path (PROBLEMATIC) ---');
-try {
-  // This will fail when running from a different directory
-  const badContent = fs.readFileSync('data.txt', 'utf-8');
-  console.log('✅ Successfully read with relative path:', badContent.trim());
-} catch (error) {
-  console.log('❌ Error reading with relative path:', (error as Error).message);
-  console.log(
-    '   This happens because Node.js looks for the file relative to process.cwd(), not the script location'
-  );
-}
+const secret = 'abcdefg';
 
-// console.log();
+const dynamicValue = '123456';
 
-// // ✅ CORRECT: Using __dirname and path.join()
-console.log('--- Reading file with __dirname and path.join() (CORRECT) ---');
-try {
-  // /home/belal/code/c2c-backend-bootcamp/node-101/data.txt
-  const correctPath = path.join(__dirname, 'data.txt');
-  console.log('Resolved path:', correctPath);
-  const goodContent = fs.readFileSync(correctPath, 'utf-8');
-  console.log('✅ Successfully read with absolute path:', goodContent.trim());
-} catch (error) {
-  console.log('❌ Error reading with absolute path:', (error as Error).message);
-}
+export const hash = createHmac('sha256', secret)
+  .update(dynamicValue)
+  .digest('hex');
 
-// console.log();
-// console.log('=== Instructions ===');
-// console.log('To see the difference:');
-// console.log(
-//   '1. Run from node-101 directory: npm run dev (or ts-node playground.ts)'
-// );
-// console.log(
-//   '2. Run from parent directory: cd .. && ts-node node-101/playground.ts'
-// );
-// console.log(
-//   '3. Run from root directory: cd ../.. && ts-node c2c-backend-bootcamp/node-101/playground.ts'
-// );
-// console.log();
-// console.log(
-//   'The relative path will fail in steps 2 and 3, but __dirname + path.join() will always work!'
-// );
+const verifyHash = (dynamicValue: string, storedHashOnDb: string) => {
+  const hash = createHmac('sha256', secret).update(dynamicValue).digest('hex');
+  return hash === storedHashOnDb;
+};
+const hashWithSalt = hash + Math.random() * 1e9;
+console.log(hashWithSalt);
+console.log(1e2, '1e2');
 
-// on my server i can use set cookie header to the request
-// and the browser client will receive the cookie and he will send it back to you on the upcoming requests
+console.log(hash.length, 'hash length');
 
-// login page --> i wrote the credintials (email-password)& isValid
-//  when user send to me logic credentials i validate it then i set cookie header with auth-id=512312321
-// browser when user send me another request it will include cookie header  auth-id=512312321
-
-// server i handle url (user/123) (public)
-
-// "/" THIS WILL SEND WITH ANY REQUEST
-// '/USER"
-
-// example.com ==> link mywebsite.com
-// mywebsite.com
-
-// when user login ==> html ( hello {username}   )
+const revereHashing = (hash: string): string => hash;
+revereHashing(
+  'b2cf7838a1745b61eb82b18dcd42c1211f8edcc0dc98f8535023c1084bb73409'
+);

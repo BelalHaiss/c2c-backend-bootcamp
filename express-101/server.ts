@@ -1,6 +1,8 @@
 import express, { Request, Response, NextFunction } from 'express';
 import path from 'node:path';
 import fs from 'node:fs';
+import { userRouter } from './module/user/user.routes';
+import { handleError } from './utils/exception';
 const PORT = 4000;
 const app = express();
 
@@ -21,11 +23,11 @@ app.use(
   })
 );
 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/api/v1/users', userRouter);
 // app.use('/users', authMiddleware);
-app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
-  // alert system
-  console.log(error);
-  res.status(500).json({ success: false, message: 'internal server' });
+app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
+  handleError(error, res);
 });
 
 const notFoundPath = path.join(__dirname, 'public', '404.html');
