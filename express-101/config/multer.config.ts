@@ -3,7 +3,7 @@ import multer from 'multer';
 import path from 'path';
 
 const destDirectory = path.join(__dirname, '../uploads');
-const fileUpload = multer({
+export const multerUpload = multer({
   storage: multer.diskStorage({
     destination: (_req, _file, cb) => {
       cb(null, destDirectory);
@@ -27,6 +27,7 @@ const fileUpload = multer({
   }
 });
 
-export const uploadSingle = (fieldName: string) => fileUpload.single(fieldName);
+export const uploadSingle = (fieldName: string) =>
+  multerUpload.single(fieldName);
 export const uploadMultiple = (fieldName: string, maxCount: number) =>
-  fileUpload.array(fieldName, maxCount);
+  multerUpload.array(fieldName, maxCount);

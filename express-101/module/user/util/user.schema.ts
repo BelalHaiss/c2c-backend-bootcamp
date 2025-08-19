@@ -8,5 +8,5 @@ export const userSchema = z.object({
   avatar: z.string().optional(),
   createdAt: z.date(),
   updatedAt: z.date(),
-  password: z.string() // hash value
+  password: z.string().min(8) // hash value
 }) satisfies ZodType<User>;

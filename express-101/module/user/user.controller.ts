@@ -26,11 +26,11 @@ export class UserController {
   };
 
   createUser = (req: Request, res: Response) => {
-    const { name, email } = req.body;
+    const { name, email, password } = req.body;
     console.log(req.file);
     const avatar = req.file ? `/uploads/${req.file.filename}` : undefined;
 
-    const user = this.service.createUser(name, email, avatar);
+    const user = this.service.createUser(name, email, password, avatar);
     res.status(201).json(user);
   };
 

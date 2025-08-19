@@ -3,17 +3,25 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { userRouter } from './module/user/user.routes';
 import { handleError } from './utils/exception';
+import { authRouter } from './module/auth/auth.routes';
+import session from 'express-session';
+import { isProduction } from './config/app.config';
 const PORT = 4000;
+
 const app = express();
 
 // global middleware that handle parseing the request and call next under the hood
-app.use((req, res, next) => {
-  console.log(req.path, 'is hit');
-  next();
-});
 
 app.use(express.json());
 app.use(express.urlencoded());
+app.use(
+  session({
+    secret: 'secret value',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: isProduction }
+  })
+);
 
 app.use(
   express.static(path.join(__dirname, 'public'), {
@@ -25,6 +33,7 @@ app.use(
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/auth', authRouter);
 // app.use('/users', authMiddleware);
 app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
   handleError(error, res);

@@ -1,8 +1,13 @@
 import { Request, Response } from 'express';
 import { StringObject } from '../../utils/util.types';
-import { RegisterDTO, RegisterResponseDTO } from './types/auth.dto';
+import {
+  LoginDTO,
+  LoginResponseDTO,
+  RegisterDTO,
+  RegisterResponseDTO
+} from './types/auth.dto';
 import { UserService } from '../user/user.service';
-import { createArgonHash } from './util/argon.util';
+import { createArgonHash, verifyArgonHash } from './util/argon.util';
 import { removeFields } from '../../utils/object.util';
 
 export class AuthService {
@@ -15,12 +20,26 @@ export class AuthService {
     const userData = this.userService.createUser(
       payload.name,
       payload.email,
-      payload.password,
+      hashedValue,
       payload.avatar
     );
 
     return removeFields(userData, ['password']);
   }
-  public login(req: Request, res: Response) {}
+  public async login(payload: LoginDTO): Promise<LoginResponseDTO | null> {
+    // find email
+    const foundUser = this.userService.findByEmail(payload.email);
+    // if no email => return error
+    if (!foundUser) return null;
+
+    const isPasswordMatch = await verifyArgonHash(
+      payload.password,
+      foundUser.password
+    );
+    // match payload password with hashed password
+    if (!isPasswordMatch) return null;
+
+    return removeFields(foundUser, ['password']);
+  }
   public logout(req: Request, res: Response) {}
 }

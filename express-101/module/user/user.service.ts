@@ -1,5 +1,6 @@
 import { UserRepository } from './user.repository';
 import { User } from './user.entity';
+import { LoginDTO } from '../auth/types/auth.dto';
 
 export class UserService {
   private repository = new UserRepository();
@@ -10,6 +11,10 @@ export class UserService {
 
   getUser(id: string): User | undefined {
     return this.repository.findById(id);
+  }
+
+  public findByEmail(email: string) {
+    return this.repository.findByEmail(email);
   }
 
   public createUser(

@@ -1,16 +1,24 @@
-import { Router } from 'express';
+import { RequestHandler, Router } from 'express';
 import { authController } from './auth.controller';
 import { uploadSingle } from '../../config/multer.config';
 
 const router = Router();
 
 // POST /api/auth - Get all users
-router.post('/register', authController.register);
+router.post(
+  '/register',
+  uploadSingle('avatar'),
+  authController.register.bind(authController)
+);
 
 // GET /api/users/:uid - Get user by ID
-// router.post('/login', userController.getUser);
+// TODO add middleware for zod validation
+router.post(
+  '/login',
+  authController.login.bind(authController) as RequestHandler
+);
 
-// // POST /api/users - Create user (with optional avatar)
+// POST /api/users - Create user (with optional avatar)
 // router.post('/logout', uploadSingle('avatar'), userController.createUser);
 
-export const userRouter = router;
+export const authRouter = router;

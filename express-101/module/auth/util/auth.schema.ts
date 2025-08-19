@@ -1,6 +1,6 @@
 import { ZodType } from 'zod';
 import { userSchema } from '../../user/util/user.schema';
-import { RegisterDTO } from '../types/auth.dto';
+import { LoginDTO, RegisterDTO } from '../types/auth.dto';
 
 export const registerDTOSchema = userSchema.pick({
   avatar: true,
@@ -8,3 +8,8 @@ export const registerDTOSchema = userSchema.pick({
   name: true,
   password: true
 }) satisfies ZodType<RegisterDTO>;
+
+export const loginDTOSchema = userSchema.pick({
+  email: true,
+  password: true
+}) satisfies ZodType<LoginDTO>;
