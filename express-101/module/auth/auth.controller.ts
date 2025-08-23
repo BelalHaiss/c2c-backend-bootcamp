@@ -4,12 +4,14 @@ import { HttpErrorStatus, StringObject } from '../../utils/util.types';
 import {
   LoginDTO,
   LoginResponseDTO,
+  LoginResponseDTOWithJWT,
   RegisterDTO,
   RegisterResponseDTO
 } from './types/auth.dto';
 import { zodValidation } from '../../utils/zod.util';
 import { loginDTOSchema, registerDTOSchema } from './util/auth.schema';
 import { deleteUploadedAsset } from '../../utils/assets.util';
+import { singJWT } from './util/jwt.util';
 
 export class AuthController {
   private authService = new AuthService();
@@ -43,8 +45,26 @@ export class AuthController {
       res.status(HttpErrorStatus.BadRequest).send('wrong credentials');
       return;
     }
-    // set session cookie
+    console.log(req.session, 'before i set the req.session');
+    req.session.userId = userData.id;
+
+    //  express session => create new entity  { 12345: { userId:123213} } => save memory
+    // express session on  response it will send the cookie with same key on session memory [abc] and sign it with my secret
     res.json(userData);
+  }
+  public async loginWithJWT(
+    req: Request<StringObject, StringObject, LoginDTO>,
+    res: Response<LoginResponseDTOWithJWT | string>,
+    next: NextFunction
+  ) {
+    const payloadData = zodValidation(loginDTOSchema, req.body, 'AUTH');
+    const userData = await this.authService.login(payloadData);
+    if (!userData) {
+      res.status(HttpErrorStatus.BadRequest).send('wrong credentials');
+      return;
+    }
+    const token = singJWT({ sub: userData.id, name: userData.name });
+    res.json({ data: userData, token });
   }
   public logout(req: Request, res: Response, next: NextFunction) {}
 }

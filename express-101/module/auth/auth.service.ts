@@ -6,18 +6,18 @@ import {
   RegisterDTO,
   RegisterResponseDTO
 } from './types/auth.dto';
-import { UserService } from '../user/user.service';
 import { createArgonHash, verifyArgonHash } from './util/argon.util';
 import { removeFields } from '../../utils/object.util';
+import { userService } from '../user/user.service';
 
 export class AuthService {
-  private userService = new UserService();
+  private _userService = userService;
 
   public async register(payload: RegisterDTO): Promise<RegisterResponseDTO> {
     // hash password
     const hashedValue = await createArgonHash(payload.password);
     // save user data in db
-    const userData = this.userService.createUser(
+    const userData = this._userService.createUser(
       payload.name,
       payload.email,
       hashedValue,
@@ -28,7 +28,7 @@ export class AuthService {
   }
   public async login(payload: LoginDTO): Promise<LoginResponseDTO | null> {
     // find email
-    const foundUser = this.userService.findByEmail(payload.email);
+    const foundUser = this._userService.findByEmail(payload.email);
     // if no email => return error
     if (!foundUser) return null;
 

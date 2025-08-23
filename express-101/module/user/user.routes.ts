@@ -1,10 +1,12 @@
 import { Router } from 'express';
 import { UserController } from './user.controller';
 import { uploadSingle } from '../../config/multer.config';
+import { isAuthenticated } from '../../middlewares/auth.middleware';
 
 const router = Router();
 const userController = new UserController();
 
+router.use(isAuthenticated);
 // GET /api/users - Get all users
 router.get('/', userController.getUsers);
 

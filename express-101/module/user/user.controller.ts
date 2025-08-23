@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { UserService } from './user.service';
+import { userService } from './user.service';
 
 export class UserController {
-  private service = new UserService();
+  private service = userService;
 
   getUsers = (
     req: Request<{}, {}, {}, { page: string; limit: string }>,

@@ -1,8 +1,7 @@
 import { UserRepository } from './user.repository';
 import { User } from './user.entity';
-import { LoginDTO } from '../auth/types/auth.dto';
 
-export class UserService {
+class UserService {
   private repository = new UserRepository();
 
   getUsers(page: number, limit: number): User[] {
@@ -38,4 +37,10 @@ export class UserService {
   deleteUser(id: string): boolean {
     return this.repository.delete(id);
   }
+
+  isUserIdExist(id: string): boolean {
+    return !!this.repository.findById(id);
+  }
 }
+
+export const userService = new UserService();

@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express, { Request, Response, NextFunction } from 'express';
 import path from 'node:path';
 import fs from 'node:fs';
@@ -6,7 +7,11 @@ import { handleError } from './utils/exception';
 import { authRouter } from './module/auth/auth.routes';
 import session from 'express-session';
 import { isProduction } from './config/app.config';
-const PORT = 4000;
+
+import { getEnvOrThrow } from './utils/util';
+
+console.log(process.env);
+const PORT = getEnvOrThrow('PORT');
 
 const app = express();
 
@@ -16,10 +21,10 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(
   session({
-    secret: 'secret value',
+    secret: [getEnvOrThrow('SESSION_SECRET')],
     resave: false,
-    saveUninitialized: true,
-    cookie: { secure: isProduction }
+    saveUninitialized: false,
+    cookie: { secure: isProduction, maxAge: 1000 * 60 * 60 * 24 * 30 }
   })
 );
 

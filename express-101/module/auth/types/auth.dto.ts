@@ -6,6 +6,10 @@ export type LoginDTO = {
 };
 
 export type LoginResponseDTO = Omit<User, 'password'>;
+export type LoginResponseDTOWithJWT = {
+  data: Omit<User, 'password'>;
+  token: string;
+};
 
 export type RegisterDTO = Pick<User, 'avatar' | 'email' | 'name' | 'password'>;
 export type RegisterResponseDTO = Omit<User, 'password'>;

@@ -1,1 +1,3 @@
-export const isProduction = process.env.NODE_ENV === 'production';
+import { getEnvOrThrow } from '../utils/util';
+
+export const isProduction = getEnvOrThrow('NODE_ENV') === 'production';

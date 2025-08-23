@@ -18,6 +18,11 @@ router.post(
   authController.login.bind(authController) as RequestHandler
 );
 
+router.post(
+  '/login-jwt',
+  authController.loginWithJWT.bind(authController) as RequestHandler
+);
+
 // POST /api/users - Create user (with optional avatar)
 // router.post('/logout', uploadSingle('avatar'), userController.createUser);
 
