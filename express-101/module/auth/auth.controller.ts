@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { AuthService } from './auth.service';
 import { HttpErrorStatus, StringObject } from '../../utils/util.types';
 import {
@@ -24,14 +24,15 @@ export class AuthController {
     try {
       const payloadData = zodValidation(registerDTOSchema, req.body, 'AUTH');
       const user = await this.authService.register(payloadData);
-      res.json(user);
+      res.create(user);
     } catch (error) {
       if (req.file) {
         await deleteUploadedAsset(req.file?.filename!);
       }
-      res
-        .status(HttpErrorStatus.InternalServerError)
-        .send('internal server error');
+      res.error({
+        message: 'internal server error',
+        statusCode: HttpErrorStatus.InternalServerError
+      });
     }
   }
   public async login(
@@ -50,7 +51,7 @@ export class AuthController {
 
     //  express session => create new entity  { 12345: { userId:123213} } => save memory
     // express session on  response it will send the cookie with same key on session memory [abc] and sign it with my secret
-    res.json(userData);
+    res.ok(userData);
   }
   public async loginWithJWT(
     req: Request<StringObject, StringObject, LoginDTO>,
@@ -64,9 +65,18 @@ export class AuthController {
       return;
     }
     const token = singJWT({ sub: userData.id, name: userData.name });
-    res.json({ data: userData, token });
+    res.ok({ user: userData, token });
   }
-  public logout(req: Request, res: Response, next: NextFunction) {}
+  public async logout(req: Request, res: Response, next: NextFunction) {
+    req.session.destroy(function (err) {
+      if (err) {
+        next(err);
+      } else {
+        res.clearCookie('connect.sid');
+        res.ok({});
+      }
+    });
+  }
 }
 
 export const authController = new AuthController();

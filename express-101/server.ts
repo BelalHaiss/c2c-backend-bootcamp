@@ -9,8 +9,8 @@ import session from 'express-session';
 import { isProduction } from './config/app.config';
 
 import { getEnvOrThrow } from './utils/util';
+import { responseEnhancer } from './middlewares/response.middleware';
 
-console.log(process.env);
 const PORT = getEnvOrThrow('PORT');
 
 const app = express();
@@ -19,6 +19,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded());
+app.use(responseEnhancer);
 app.use(
   session({
     secret: [getEnvOrThrow('SESSION_SECRET')],
@@ -40,9 +41,6 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/auth', authRouter);
 // app.use('/users', authMiddleware);
-app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
-  handleError(error, res);
-});
 
 const notFoundPath = path.join(__dirname, 'public', '404.html');
 
@@ -66,6 +64,10 @@ app.use((req: Request, res: Response) => {
   // For static files, use the dynamic 404 template
 
   res.status(404).send(dynamicHtml);
+});
+
+app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
+  handleError(error, res);
 });
 app.listen(PORT, () => {
   console.log('App is running in port: ', PORT);

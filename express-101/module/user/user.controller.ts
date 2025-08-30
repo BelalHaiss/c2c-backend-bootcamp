@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { userService } from './user.service';
 
 export class UserController {
@@ -6,12 +6,13 @@ export class UserController {
 
   getUsers = (
     req: Request<{}, {}, {}, { page: string; limit: string }>,
-    res: Response
+    res: Response,
+    next: NextFunction
   ) => {
     const page = Number(req.query.page);
     const limit = Number(req.query.limit);
     const users = this.service.getUsers(page, limit);
-    res.json(users);
+    res.ok(users);
   };
 
   getUser = (req: Request<{ uid: string }>, res: Response) => {
@@ -22,7 +23,7 @@ export class UserController {
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-    res.json(user);
+    res.ok(user);
   };
 
   createUser = (req: Request, res: Response) => {
@@ -31,7 +32,7 @@ export class UserController {
     const avatar = req.file ? `/uploads/${req.file.filename}` : undefined;
 
     const user = this.service.createUser(name, email, password, avatar);
-    res.status(201).json(user);
+    res.create(user);
   };
 
   updateUser = (req: Request, res: Response) => {
@@ -45,7 +46,7 @@ export class UserController {
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-    res.json(user);
+    res.create(user);
   };
 
   deleteUser = (req: Request, res: Response) => {
@@ -56,6 +57,6 @@ export class UserController {
     if (!deleted) {
       return res.status(404).json({ error: 'User not found' });
     }
-    res.status(204).send();
+    res.ok({});
   };
 }
