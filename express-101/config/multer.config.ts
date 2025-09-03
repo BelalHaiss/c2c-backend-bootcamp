@@ -1,6 +1,6 @@
 import multer from 'multer';
 
-import path from 'path';
+import path from 'node:path';
 
 const destDirectory = path.join(__dirname, '../uploads');
 export const multerUpload = multer({

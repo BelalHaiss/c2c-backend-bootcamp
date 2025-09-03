@@ -18,6 +18,7 @@ const app = express();
 // global middleware that handle parseing the request and call next under the hood
 
 app.use(express.json());
+// check if its content-header and if its json => handle stream and   decode  && desrialize => req.body    {}
 app.use(express.urlencoded());
 app.use(responseEnhancer);
 app.use(
@@ -69,6 +70,7 @@ app.use((req: Request, res: Response) => {
 app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
   handleError(error, res);
 });
+
 app.listen(PORT, () => {
   console.log('App is running in port: ', PORT);
 });

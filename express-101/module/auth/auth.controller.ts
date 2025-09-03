@@ -22,7 +22,11 @@ export class AuthController {
     next: NextFunction
   ) {
     try {
-      const payloadData = zodValidation(registerDTOSchema, req.body, 'AUTH');
+      const payloadData = zodValidation<RegisterDTO>(
+        registerDTOSchema,
+        req.body,
+        'AUTH'
+      );
       const user = await this.authService.register(payloadData);
       res.create(user);
     } catch (error) {
