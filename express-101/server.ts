@@ -13,7 +13,7 @@ import { responseEnhancer } from './middlewares/response.middleware';
 
 const PORT = getEnvOrThrow('PORT');
 
-const app = express();
+export const app = express();
 
 // global middleware that handle parseing the request and call next under the hood
 
@@ -71,6 +71,8 @@ app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
   handleError(error, res);
 });
 
-app.listen(PORT, () => {
-  console.log('App is running in port: ', PORT);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log('App is running in port: ', PORT);
+  });
+}
