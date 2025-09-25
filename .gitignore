@@ -4,3 +4,5 @@ uploads
 
 .env*
 !.env.example
+
+coverage

@@ -4,11 +4,11 @@ import { User } from './user.entity';
 class UserService {
   private repository = new UserRepository();
 
-  getUsers(page: number, limit: number): User[] {
-    return this.repository.findAll();
+  getUsers(page: number, limit: number): Promise<User[]> {
+    return this.repository.findAll({});
   }
 
-  getUser(id: string): User | undefined {
+  getUser(id: number): Promise<User> {
     return this.repository.findById(id);
   }
 
@@ -21,24 +21,19 @@ class UserService {
     email: string,
     password: string,
     avatar?: string
-  ): User {
+  ) {
     return this.repository.create(name, email, password, avatar);
   }
 
-  updateUser(
-    id: string,
-    name?: string,
-    email?: string,
-    avatar?: string
-  ): User | null {
+  updateUser(id: number, name?: string, email?: string, avatar?: string) {
     return this.repository.update(id, name, email, avatar);
   }
 
-  deleteUser(id: string): boolean {
+  deleteUser(id: number) {
     return this.repository.delete(id);
   }
 
-  isUserIdExist(id: string): boolean {
+  isUserIdExist(id: number): boolean {
     return !!this.repository.findById(id);
   }
 }

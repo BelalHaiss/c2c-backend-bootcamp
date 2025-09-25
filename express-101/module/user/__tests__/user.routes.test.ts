@@ -26,7 +26,6 @@ describe('user routes endpoints', () => {
         email: expect.any(String)
       });
     }
-    console.log(response.body, 'data ');
   });
 
   it('POST /api/v1/users should Create user and return user and its saved to DB  ', async () => {
@@ -37,18 +36,20 @@ describe('user routes endpoints', () => {
     ]);
     const response = await authedTestAgent
       .post('/api/v1/users')
-      .send(newUserSeeds);
+      .send({ ...newUserSeeds, email: 'ahmed@gmail.com' });
     // check the response
+
+    expect(response.status).toBe(201);
+    // check that user saved in db
+
     expect(response.body).toEqual({
       success: true,
       data: expect.objectContaining<Partial<User>>({
         name: newUserSeeds.name,
-        email: newUserSeeds.email
+        email: 'ahmed@gmail.com'
       })
     });
 
-    expect(response.status).toBe(201);
-    // check that user saved in db
     const userRepository = new UserRepository();
     const createdUser = userRepository.findByEmail(newUserSeeds.email);
 

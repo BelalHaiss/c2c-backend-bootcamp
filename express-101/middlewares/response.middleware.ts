@@ -4,6 +4,9 @@ import { ErrorStatusCode } from '../utils/util.types';
 export type UnifiedApiErrorResponse = {
   statusCode: ErrorStatusCode;
   message: string;
+  form_error?: {
+    [field: string]: string;
+  };
 };
 
 export type SuccessApiResponse = {
