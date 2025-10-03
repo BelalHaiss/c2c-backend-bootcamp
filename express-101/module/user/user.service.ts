@@ -1,19 +1,19 @@
-import { UserRepository } from './user.repository';
 import { User } from './user.entity';
+import { UserRepositoryI } from './interfaces/user-repo-interface';
+import { userMongoRepository } from './user-mongo-repository';
 
 class UserService {
-  private repository = new UserRepository();
-
-  getUsers(page: number, limit: number): Promise<User[]> {
-    return this.repository.findAll({});
+  constructor(private userRepo: UserRepositoryI = userMongoRepository) {}
+  getUsers(page = 1, limit = 10) {
+    return this.userRepo.findAll(page, limit);
   }
 
-  getUser(id: number): Promise<User> {
-    return this.repository.findById(id);
+  getUser(id: string) {
+    return this.userRepo.findById(id);
   }
 
   public findByEmail(email: string) {
-    return this.repository.findByEmail(email);
+    return this.userRepo.findByEmail(email);
   }
 
   public createUser(
@@ -22,19 +22,19 @@ class UserService {
     password: string,
     avatar?: string
   ) {
-    return this.repository.create(name, email, password, avatar);
+    return this.userRepo.create(name, email, password, avatar);
   }
 
-  updateUser(id: number, name?: string, email?: string, avatar?: string) {
-    return this.repository.update(id, name, email, avatar);
+  updateUser(id: string, name?: string, email?: string, avatar?: string) {
+    return this.userRepo.update(id, name, email, avatar);
   }
 
-  deleteUser(id: number) {
-    return this.repository.delete(id);
+  deleteUser(id: string) {
+    return this.userRepo.delete(id);
   }
 
-  isUserIdExist(id: number): boolean {
-    return !!this.repository.findById(id);
+  isUserIdExist(id: string): boolean {
+    return !!this.userRepo.findById(id);
   }
 }
 

@@ -1,13 +1,15 @@
 import { Prisma } from '../../generated/prisma';
 import { prisma } from '../../services/prisma.service';
+import { UserRepositoryI } from './interfaces/user-repo-interface';
 import { User } from './user.entity';
 
-export class UserRepository {
+export class UserRepository implements UserRepositoryI {
   private prismaUser = prisma.user;
 
-  findAll(query: Prisma.UserFindManyArgs['where']): Promise<User[]> {
+  findAll(page = 1, limit = 10): Promise<User[]> {
     return this.prismaUser.findMany({
-      where: query
+      skip: (page - 1) * limit,
+      take: limit
     });
   }
 
@@ -43,7 +45,8 @@ export class UserRepository {
     });
   }
 
-  delete(id: number) {
-    return this.prismaUser.delete({ where: { id } });
+  async delete(id: number) {
+    const deletedUser = await this.prismaUser.delete({ where: { id } });
+    return Boolean(deletedUser);
   }
 }

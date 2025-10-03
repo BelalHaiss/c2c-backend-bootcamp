@@ -25,6 +25,8 @@ export const handleError = (error: unknown, res: Response) => {
     res.error({ message: error.message, statusCode: 400 });
     return;
   }
+  // TODO handle mongoose Error
+
   console.log(`internal server error`, error);
   //   we should alert ourself
   res.error({ message: 'internal server error', statusCode: 500 });

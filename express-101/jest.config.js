@@ -9,5 +9,8 @@ module.exports = {
     ...tsJestTransformCfg,
   },
   coverageDirectory: "./coverage",
+  detectOpenHandles: true,
+  testTimeout: 30000,
+  globalTeardown: "./tests/setup/global-teardown.ts",
 };
 

@@ -5,7 +5,8 @@
   "scripts": {
     "test": "jest --coverage=true",
     "dev": " tsx watch server.ts",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "seed-mongoose": "tsx seeds/mongoose.seed.ts"
   },
   "keywords": [],
   "author": "",
@@ -18,6 +19,7 @@
     "express": "^5.1.0",
     "express-session": "^1.18.2",
     "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.18.2",
     "multer": "^2.0.2",
     "zod": "^4.0.17"
   },

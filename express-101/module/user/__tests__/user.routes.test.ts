@@ -12,11 +12,21 @@ describe('user routes endpoints', () => {
     expect(response.status).toBe(401);
   });
   it('GET /api/v1/users should return array of users', async () => {
-    const response = await authedTestAgent.get('/api/v1/users');
+    const pageQuery = 2;
+    const limitQuery = 5;
+    const response = await authedTestAgent.get(
+      `/api/v1/users?page=${pageQuery}&limit=${limitQuery}`
+    );
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({
       success: true,
-      data: expect.any(Array)
+      data: expect.any(Array),
+      meta: expect.objectContaining({
+        page: pageQuery,
+        limit: limitQuery,
+        totalRecords: expect.any(Number),
+        totalPages: expect.any(Number)
+      })
     });
 
     if (response.body.data.length) {
@@ -26,6 +36,8 @@ describe('user routes endpoints', () => {
         email: expect.any(String)
       });
     }
+
+    console.log(response.body.data[0]);
   });
 
   it('POST /api/v1/users should Create user and return user and its saved to DB  ', async () => {

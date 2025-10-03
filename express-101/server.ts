@@ -10,7 +10,8 @@ import { isProduction } from './config/app.config';
 
 import { getEnvOrThrow } from './utils/util';
 import { responseEnhancer } from './middlewares/response.middleware';
-
+import './services/mongoose.service';
+import { postRouter } from './module/post/post.router';
 const PORT = getEnvOrThrow('PORT');
 
 export const app = express();
@@ -41,6 +42,8 @@ app.use(
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/auth', authRouter);
+
+app.use('/api/v1/posts', postRouter);
 // app.use('/users', authMiddleware);
 
 const notFoundPath = path.join(__dirname, 'public', '404.html');

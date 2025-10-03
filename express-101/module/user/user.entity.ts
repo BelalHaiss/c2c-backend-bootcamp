@@ -1,3 +1,10 @@
-import { User as PrismaUser } from '../../generated/prisma';
-
-export type User = PrismaUser;
+export type User = {
+  name: string;
+  id: string;
+  email: string;
+  avatar: string | null;
+  password: string;
+  createdAt: Date;
+  updatedAt: Date;
+  postCounts: number;
+};
