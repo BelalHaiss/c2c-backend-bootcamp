@@ -1,0 +1,145 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CUSTOMER
+  MERCHANT
+}
+
+enum OrderStatus {
+  PENDING
+  SUCCESS
+}
+
+enum TransactionType {
+  CREDIT
+  DEBIT
+}
+
+enum ReturnStatus {
+  PICKED
+  REFUND
+  PENDING
+}
+
+model User {
+  id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  name      String   @db.VarChar(255)
+  email     String   @unique @db.VarChar(255)
+  password  String   @db.VarChar(255)
+  role      UserRole
+  createdAt DateTime @default(now()) @map("created_at")
+  isDeleted Boolean  @default(false) @map("is_deleted")
+
+  // Relations
+  orders       Order[]
+  transactions UserTransaction[]
+  Product      Product[]
+
+  @@index([name], map: "users_name_index")
+  @@map("users")
+}
+
+model Product {
+  id          BigInt  @id @default(autoincrement()) @db.UnsignedBigInt
+  name        String  @db.VarChar(255)
+  description String  @db.Text
+  imageUrl    String  @map("image_url") @db.VarChar(255)
+  price       Decimal @db.Decimal(8, 2)
+  merchantId  BigInt  @map("merchant_id") @db.UnsignedBigInt
+
+  isDeleted     Boolean        @default(false) @map("is_deleted")
+  // Relations
+  orderProducts OrderProduct[]
+  returnedItems ReturnedItem[]
+  merchant      User           @relation(fields: [merchantId], references: [id])
+
+  @@map("products")
+}
+
+model Order {
+  id          BigInt      @id @default(autoincrement()) @db.UnsignedBigInt
+  userId      BigInt      @map("user_id") @db.UnsignedBigInt
+  createdAt   DateTime    @default(now()) @map("created_at")
+  orderStatus OrderStatus @map("order_status")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  // Relations
+  user          User              @relation(fields: [userId], references: [id])
+  orderProducts OrderProduct[]
+  transactions  UserTransaction[]
+  orderReturns  OrderReturn[]
+
+  @@map("orders")
+}
+
+model OrderProduct {
+  orderId      BigInt  @map("order_id") @db.UnsignedBigInt
+  productId    BigInt  @map("product_id") @db.UnsignedBigInt
+  pricePerItem Decimal @map("price_per_item") @db.Decimal(8, 2)
+  totalQty     Int     @map("total_qty") @db.UnsignedInt
+
+  // Relations
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@id([orderId, productId])
+  @@map("order_product")
+}
+
+model UserTransaction {
+  id            BigInt          @id @default(autoincrement()) @db.UnsignedBigInt
+  amount        Decimal         @db.Decimal(8, 2)
+  userId        BigInt          @map("user_id") @db.UnsignedBigInt
+  createdAt     DateTime        @default(now()) @map("created_at")
+  type          TransactionType
+  orderId       BigInt          @map("order_id") @db.UnsignedBigInt
+  orderReturnId BigInt?         @map("order_return_id") @db.UnsignedBigInt
+
+  // Relations
+  user        User         @relation(fields: [userId], references: [id])
+  order       Order        @relation(fields: [orderId], references: [id])
+  orderReturn OrderReturn? @relation(fields: [orderReturnId], references: [id])
+
+  @@map("user_transactions")
+}
+
+model OrderReturn {
+  id        BigInt       @id @default(autoincrement()) @db.UnsignedBigInt
+  orderId   BigInt       @map("order_id") @db.UnsignedBigInt
+  status    ReturnStatus
+  createdAt DateTime     @default(now()) @map("created_at")
+
+  // Relations
+  order         Order             @relation(fields: [orderId], references: [id])
+  returnedItems ReturnedItem[]
+  transactions  UserTransaction[]
+
+  @@map("order_returns")
+}
+
+model ReturnedItem {
+  orderReturnId BigInt @map("order_return_id") @db.UnsignedBigInt
+  productId     BigInt @map("product_id") @db.UnsignedBigInt
+  qty           Int    @db.UnsignedInt
+
+  // Relations
+  orderReturn OrderReturn @relation(fields: [orderReturnId], references: [id])
+  product     Product     @relation(fields: [productId], references: [id])
+
+  @@id([orderReturnId, productId])
+  @@map("returned_items")
+}
