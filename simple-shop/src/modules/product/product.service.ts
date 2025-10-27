@@ -1,14 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
 import { DatabaseService } from '../database/database.service';
 import { ProductQuery } from './types/product.types';
 import { Prisma } from 'generated/prisma';
+import type { CreateProductDTO, UpdateProductDTO } from './types/product.dto';
 
 @Injectable()
 export class ProductService {
   constructor(private prismaService: DatabaseService) {}
-  create(createProductDto: CreateProductDto) {
+  create(createProductDto: CreateProductDTO) {
     return 'This action adds a new product';
   }
 
@@ -43,11 +42,11 @@ export class ProductService {
     });
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
+  update(id: bigint, updateProductDto: UpdateProductDTO) {
     return `This action updates a #${id} product`;
   }
 
-  remove(id: number) {
+  remove(id: bigint) {
     return `This action removes a #${id} product`;
   }
 }
