@@ -7,7 +7,6 @@ export const generateProductSeed = (merchantId: bigint) => {
   > & { price: number } = {
     name: faker.commerce.productName(),
     description: faker.commerce.productDescription(),
-    imageUrl: faker.image.urlLoremFlickr({ category: 'product' }),
     price: faker.number.int({ min: 100, max: 10000 }),
     merchantId,
   };

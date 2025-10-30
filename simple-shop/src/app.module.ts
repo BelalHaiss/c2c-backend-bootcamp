@@ -7,6 +7,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './modules/auth/guards/auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 import { ProductModule } from './modules/product/product.module';
+import { FileModule } from './modules/file/file.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ProductModule } from './modules/product/product.module';
     UserModule,
     DatabaseModule,
     ProductModule,
+    FileModule,
   ],
   providers: [
     {
