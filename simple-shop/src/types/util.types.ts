@@ -1,3 +1,5 @@
+import { Prisma } from 'generated/prisma';
+
 export type PaginationQueryType = {
   page?: number;
   limit?: number;
@@ -12,3 +14,5 @@ export type PaginatedResult<T> = {
     totalPages: number;
   };
 };
+
+export type TransactionClient = Prisma.TransactionClient;

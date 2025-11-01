@@ -13,8 +13,7 @@ import { ImageKitProvider } from './imagekit.provider';
           // validation limits & file filter
           storage: fileService.imageKitMulterStorage(),
           limits: {
-            fileSize: 2,
-            //  fileSize: 2 * 1024 * 1024
+            fileSize: 2 * 1024 * 1024,
           },
           fileFilter: (req, file, cb) => {
             if (!file.mimetype.startsWith('image/')) {

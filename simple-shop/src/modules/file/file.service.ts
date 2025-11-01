@@ -2,6 +2,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { imageKitToken } from './imagekit.provider';
 import ImageKit, { toFile } from '@imagekit/nodejs';
 import { StorageEngine } from 'multer';
+import { Prisma } from 'generated/prisma';
+import { SideEffectQueue } from 'src/utils/side-effects';
+import { TransactionClient } from 'src/types/util.types';
 
 @Injectable()
 export class FileService {
@@ -35,5 +38,41 @@ export class FileService {
       },
     };
     return imageKitStorage;
+  }
+
+  createFileAssetData(
+    file: Express.Multer.File,
+    userId: number | bigint,
+  ): Prisma.AssetUncheckedCreateInput {
+    return {
+      fileId: file.fileId!,
+      fileSizeInKB: Math.floor(file.size / 1024),
+      url: file.url!,
+      ownerId: userId,
+      fileType: file.mimetype,
+    };
+  }
+
+  async deleteProductAsset(
+    prismaTX: TransactionClient,
+    productId: number,
+    userId: number,
+    sideEffects: SideEffectQueue,
+  ) {
+    const whereClause = {
+      where: {
+        productId,
+        ownerId: userId,
+      },
+    };
+    const existingAssets = await prismaTX.asset.findMany(whereClause);
+
+    await prismaTX.asset.deleteMany(whereClause);
+
+    existingAssets.forEach((asset) => {
+      sideEffects.add('delete imagekit file', async () => {
+        await this.imagekit.files.delete(asset.fileId);
+      });
+    });
   }
 }

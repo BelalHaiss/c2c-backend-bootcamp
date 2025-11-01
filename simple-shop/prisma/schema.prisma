@@ -101,7 +101,6 @@ model Asset {
   fileSizeInKB        Int                 @db.UnsignedInt
   ownerId             BigInt              @map("owner_id") @db.UnsignedBigInt
   createdAt           DateTime            @default(now()) @map("created_at")
-  deletedAt           DateTime?           @map("deleted_at")
   productId           BigInt?             @map("product_id") @db.UnsignedBigInt
   // Relations
   owner               User                @relation(fields: [ownerId], references: [id])
