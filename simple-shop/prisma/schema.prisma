@@ -39,6 +39,10 @@ enum StorageProviderName {
   IMAGE_KIT
 }
 
+enum PaymentMethod {
+  CASH
+}
+
 model User {
   id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
   name      String   @db.VarChar(255)
@@ -131,6 +135,7 @@ model UserTransaction {
   type          TransactionType
   orderId       BigInt          @map("order_id") @db.UnsignedBigInt
   orderReturnId BigInt?         @map("order_return_id") @db.UnsignedBigInt
+  paymentMethod PaymentMethod   @default(CASH) @map("payment_method")
 
   // Relations
   user        User         @relation(fields: [userId], references: [id])

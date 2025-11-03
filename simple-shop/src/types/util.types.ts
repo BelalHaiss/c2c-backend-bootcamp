@@ -5,8 +5,7 @@ export type PaginationQueryType = {
   limit?: number;
 };
 
-export type PaginatedResult<T> = {
-  data: T[];
+export type PaginationResponseMeta = {
   meta: {
     total: number;
     page: number;
@@ -14,5 +13,8 @@ export type PaginatedResult<T> = {
     totalPages: number;
   };
 };
+export type PaginatedResult<T> = {
+  data: T[];
+} & PaginationResponseMeta;
 
 export type TransactionClient = Prisma.TransactionClient;

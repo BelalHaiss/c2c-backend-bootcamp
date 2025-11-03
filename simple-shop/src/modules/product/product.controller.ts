@@ -22,6 +22,7 @@ import type { ProductQuery } from './types/product.types';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import {
+  productSchema,
   productValidationSchema,
   updateProductValidationSchema,
 } from './util/proudct.validation.schema';
@@ -46,12 +47,8 @@ export class ProductController {
 
   @Roles(['MERCHANT', 'CUSTOMER'])
   @Get()
-  findAll(@Query() query: ProductQuery) {
-    return this.productService.findAll({
-      limit: Number(query.limit),
-      page: Number(query.page),
-      name: query.name,
-    });
+  findAll(@Query(new ZodValidationPipe(productSchema)) query: ProductQuery) {
+    return this.productService.findAll(query);
   }
 
   @Roles(['MERCHANT', 'CUSTOMER'])
@@ -75,7 +72,10 @@ export class ProductController {
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.productService.remove(id);
+  remove(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() request: Express.Request,
+  ) {
+    return this.productService.remove(id, request.user);
   }
 }

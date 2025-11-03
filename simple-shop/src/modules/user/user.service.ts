@@ -16,12 +16,12 @@ export class UserService {
   }
 
   findAll(
-    query: Required<PaginationQueryType>,
+    query: PaginationQueryType,
   ): Promise<PaginatedResult<Omit<User, 'password'>>> {
     return this.prismaService.$transaction(async (prisma) => {
+      const pagination = this.prismaService.handleQueryPagination(query);
       const users = await prisma.user.findMany({
-        skip: (query.page - 1) * query.limit,
-        take: query.limit,
+        ...removeFields(pagination, ['page']),
         omit: {
           password: true,
         },
@@ -29,12 +29,11 @@ export class UserService {
       const count = await prisma.user.count();
       return {
         data: users,
-        meta: {
-          total: count,
-          page: query.page,
-          limit: query.limit,
-          totalPages: Math.ceil(count / query.limit),
-        },
+        ...this.prismaService.formatPaginationResponse({
+          page: pagination.page,
+          count,
+          limit: pagination.take,
+        }),
       };
     });
   }
