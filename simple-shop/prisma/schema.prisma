@@ -148,7 +148,7 @@ model UserTransaction {
 model OrderReturn {
   id        BigInt       @id @default(autoincrement()) @db.UnsignedBigInt
   orderId   BigInt       @map("order_id") @db.UnsignedBigInt
-  status    ReturnStatus
+  status    ReturnStatus @default(PENDING)
   createdAt DateTime     @default(now()) @map("created_at")
 
   // Relations
