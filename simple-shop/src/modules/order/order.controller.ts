@@ -18,6 +18,8 @@ import type {
   PaginatedResult,
   PaginationQueryType,
 } from 'src/types/util.types';
+import { User } from 'src/decorators/user.decorator';
+import { UserResponseDTO } from '../auth/dto/auth.dto';
 
 @Controller('order')
 @Roles(['CUSTOMER'])
@@ -29,9 +31,9 @@ export class OrderController {
     @Body(new ZodValidationPipe(createOrderDTOValidationSchema))
     createOrderDto: CreateOrderDTO,
 
-    @Req() request: Express.Request,
+    @User() user: UserResponseDTO['user'],
   ): Promise<CreateOrderResponseDTO> {
-    return this.orderService.create(createOrderDto, BigInt(request.user!.id));
+    return this.orderService.create(createOrderDto, BigInt(user.id));
   }
 
   @Get()
