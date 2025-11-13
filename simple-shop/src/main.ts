@@ -3,12 +3,11 @@ import { AppModule } from './app.module';
 import { LoggingInterceptor } from './interceptors/loggin.interceptor';
 import { ResponseInterceptor } from './interceptors/response.interceptor';
 import {
-  UncaughtExceptionFilter,
   HttpExceptionFilter,
-  ImageKitExceptionFilter,
   PrismaExceptionFilter,
+  UncaughtExceptionFilter,
   ZodExceptionFilter,
-} from './exceptions/exceptions';
+} from './exceptions/exception';
 
 BigInt.prototype.toJSON = function () {
   return this.toString();
@@ -25,9 +24,8 @@ async function bootstrap() {
   app.useGlobalFilters(
     new UncaughtExceptionFilter(),
     new HttpExceptionFilter(),
-    new ImageKitExceptionFilter(),
-    new PrismaExceptionFilter(),
     new ZodExceptionFilter(),
+    new PrismaExceptionFilter(),
   );
 
   console.log(process.env.NODE_ENV, 'NODE_ENV');

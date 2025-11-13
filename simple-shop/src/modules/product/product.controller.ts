@@ -11,6 +11,7 @@ import {
   UploadedFile,
   Req,
   ParseIntPipe,
+  UseFilters,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import type {
@@ -27,6 +28,8 @@ import {
   updateProductValidationSchema,
 } from './util/proudct.validation.schema';
 import { Roles } from 'src/decorators/roles.decorator';
+import { ImageKitExceptionFilter } from 'src/exceptions/exception';
+import { FileCleanupInterceptor } from '../file/cleanup-file.interceptor';
 
 @Controller('product')
 @Roles(['MERCHANT'])
@@ -34,7 +37,8 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file'), FileCleanupInterceptor)
+  @UseFilters(ImageKitExceptionFilter)
   create(
     @Body(new ZodValidationPipe(productValidationSchema))
     createProductDto: CreateProductDTO,
@@ -58,7 +62,8 @@ export class ProductController {
   }
 
   @Patch(':id')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file'), FileCleanupInterceptor)
+  @UseFilters(ImageKitExceptionFilter)
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body(new ZodValidationPipe(updateProductValidationSchema))

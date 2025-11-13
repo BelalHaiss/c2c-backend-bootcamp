@@ -31,8 +31,7 @@ export class FileService {
       _removeFile: (req, file, cb) => {
         if (!file.fileId) return cb(null);
         console.log('_removeFile of custom multer imagekit storage triggered ');
-        this.imagekit.files
-          .delete(file.fileId)
+        this.deleteFileFromImageKit(file.fileId)
           .then(() => cb(null))
           .catch(cb);
       },
@@ -74,5 +73,9 @@ export class FileService {
         await this.imagekit.files.delete(asset.fileId);
       });
     });
+  }
+
+  deleteFileFromImageKit(fileId: string) {
+    return this.imagekit.files.delete(fileId);
   }
 }

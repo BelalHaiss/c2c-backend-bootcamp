@@ -37,8 +37,8 @@ export class UserService {
       };
     });
   }
-  findByEmailOrThrow(email: string) {
-    return this.prismaService.user.findUniqueOrThrow({
+  findByEmail(email: string) {
+    return this.prismaService.user.findUnique({
       where: { email },
     });
   }

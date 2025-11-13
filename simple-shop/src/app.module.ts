@@ -9,11 +9,18 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
 import { ProductModule } from './modules/product/product.module';
 import { FileModule } from './modules/file/file.module';
 import { OrderModule } from './modules/order/order.module';
+import path from 'path';
+
+const envFilePath = path.join(
+  __dirname,
+  `../.env.${process.env.NODE_ENV === 'development' ? 'dev' : 'prod'}`,
+);
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath,
     }),
     AuthModule,
     UserModule,

@@ -30,7 +30,11 @@ export class AuthService {
 
   async login(loginDTO: LoginDTO): Promise<UserResponseDTO> {
     // find user by email
-    const foundUser = await this.userService.findByEmailOrThrow(loginDTO.email);
+    const foundUser = await this.userService.findByEmail(loginDTO.email);
+
+    if (!foundUser) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
 
     // flag if policies allow this
     if (foundUser.isDeleted) {
