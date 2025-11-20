@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Param, Req, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Req,
+  Query,
+  UseInterceptors,
+} from '@nestjs/common';
 import { OrderService } from './order.service';
 import { Roles } from 'src/decorators/roles.decorator';
 import type {
@@ -20,6 +29,7 @@ import type {
 } from 'src/types/util.types';
 import { User } from 'src/decorators/user.decorator';
 import { UserResponseDTO } from '../auth/dto/auth.dto';
+import { IdempotencyInterceptor } from 'src/interceptors/idempotency.interceptor';
 
 @Controller('order')
 @Roles(['CUSTOMER'])
@@ -27,6 +37,7 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post()
+  @UseInterceptors(IdempotencyInterceptor)
   create(
     @Body(new ZodValidationPipe(createOrderDTOValidationSchema))
     createOrderDto: CreateOrderDTO,
@@ -58,6 +69,7 @@ export class OrderController {
 
   // create return
   @Post('return')
+  @UseInterceptors(IdempotencyInterceptor)
   createReturn(
     @Body(new ZodValidationPipe(createReturnDTOValidationSchema))
     createReturnDto: CreateOrderReturnDTO,

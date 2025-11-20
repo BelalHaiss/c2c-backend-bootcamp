@@ -8,13 +8,16 @@ import {
   UncaughtExceptionFilter,
   ZodExceptionFilter,
 } from './exceptions/exception';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 BigInt.prototype.toJSON = function () {
   return this.toString();
 };
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.set('trust proxy', 'loopback'); // Trust requests from the loopback address
+
   app.setGlobalPrefix('api');
   app.useGlobalInterceptors(
     new LoggingInterceptor(),

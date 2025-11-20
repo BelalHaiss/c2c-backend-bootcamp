@@ -30,6 +30,7 @@ import {
 import { Roles } from 'src/decorators/roles.decorator';
 import { ImageKitExceptionFilter } from 'src/exceptions/exception';
 import { FileCleanupInterceptor } from '../file/cleanup-file.interceptor';
+import { IdempotencyInterceptor } from 'src/interceptors/idempotency.interceptor';
 
 @Controller('product')
 @Roles(['MERCHANT'])
@@ -37,7 +38,11 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('file'), FileCleanupInterceptor)
+  @UseInterceptors(
+    IdempotencyInterceptor,
+    FileInterceptor('file'),
+    FileCleanupInterceptor,
+  )
   @UseFilters(ImageKitExceptionFilter)
   create(
     @Body(new ZodValidationPipe(productValidationSchema))
@@ -62,7 +67,11 @@ export class ProductController {
   }
 
   @Patch(':id')
-  @UseInterceptors(FileInterceptor('file'), FileCleanupInterceptor)
+  @UseInterceptors(
+    IdempotencyInterceptor,
+    FileInterceptor('file'),
+    FileCleanupInterceptor,
+  )
   @UseFilters(ImageKitExceptionFilter)
   update(
     @Param('id', ParseIntPipe) id: number,

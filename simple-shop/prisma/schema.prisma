@@ -43,6 +43,12 @@ enum PaymentMethod {
   CASH
 }
 
+enum IdempotencyStatus {
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+}
+
 model User {
   id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
   name      String   @db.VarChar(255)
@@ -170,4 +176,16 @@ model ReturnedItem {
 
   @@id([orderReturnId, productId])
   @@map("returned_items")
+}
+
+// create idempotency model
+model Idempotency {
+  idempotencyKey    String            @id @map("idempotency_key") @db.VarChar(255)
+  response          Json?
+  createdAt         DateTime          @default(now()) @map("created_at")
+  expiresAt         DateTime          @map("expires_at")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
+  idempotencyStatus IdempotencyStatus @map("idempotency_status")
+
+  @@map("idempotencies")
 }
